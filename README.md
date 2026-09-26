@@ -1,46 +1,44 @@
 # PLAYBOOK app download redirect
 
-A lightweight, static page for one QR code URL. Android visitors are sent to Google Play, and iPhone/iPad visitors are sent to the App Store after a short 900 ms delay. Desktop visitors see both download buttons. The buttons stay visible if automatic redirection is unavailable. The page has no ads, analytics, external scripts, dependencies, or third-party redirect service.
+A lightweight, static page for one QR code and website link. Android visitors are sent to Google Play, and iPhone/iPad visitors are sent to the App Store after a short 900 ms delay. Desktop visitors see buttons for the App Store, Google Play, and the PLAYBOOK web version. All three buttons remain available if automatic redirection does not happen. The page has no ads, analytics, external scripts, fonts, dependencies, or third-party redirect service.
 
 ## Files
 
 - `index.html` — the complete page, styles, and device redirect logic.
+- `42.png` — the PLAYBOOK logo used on the page.
+- `tests/test_download_page.py` — dependency-free checks for the page's links and logo.
+- `qr/` — existing QR exports; check their encoded URL before using them.
 
 No build command or Vercel configuration is needed.
 
 ## One link for the QR code and website button
 
-After deployment, use the **same production Vercel URL** in both places:
+Use **https://download.get-playbook.com/** in both places:
 
 - Encode it in the static QR code.
 - Set it as the destination of the Download button on the main PLAYBOOK website.
 
-For a plain HTML website button, replace the example URL with your actual production Vercel URL:
+For a plain HTML website button:
 
 ```html
-<a href="https://YOUR-PROJECT.vercel.app/">Download PLAYBOOK</a>
+<a href="https://download.get-playbook.com/">Download PLAYBOOK</a>
 ```
 
-The visitor's browser runs the device check after opening that URL. Android goes to Google Play, iPhone/iPad goes to the App Store, and desktop shows both store buttons. You do not need separate QR codes or separate website links for each platform.
+The visitor's browser runs the device check after opening that URL. Android goes to Google Play, iPhone/iPad goes to the App Store, and desktop shows all three choices. You do not need separate QR codes or website links for each platform. Existing QR exports should be scanned before use; regenerate them if they encode the older Vercel URL.
 
-## Deploy to Vercel
+## Publish an update
 
-1. Create a GitHub repository named `playbook-app-download-redirect`.
-2. Upload `index.html` and `README.md`, or push this folder to that repository.
-3. In Vercel, choose **Add New → Project**, import the GitHub repository, and leave the root directory at the repository root.
-4. Deploy the project. Vercel will serve `index.html` as the home page.
-5. Copy the production Vercel URL (for example, `https://playbook-app-download-redirect.vercel.app/`). Use the actual URL assigned to your project.
-6. Point the Download button on the main PLAYBOOK website to that production URL.
-7. Generate a **static** QR code whose encoded content is exactly the same URL. Use an offline QR generator or a generator that outputs a direct QR code; avoid any “dynamic QR” or short-link redirect option.
-8. Download the QR code as **SVG for print** and **PNG for digital use**. Scan both exports to confirm they open the production Vercel URL directly.
+1. Review the local changes and run `python3 -m unittest discover -s tests -v`.
+2. Commit and push `index.html`, `42.png`, `README.md`, and `tests/` from GitHub Desktop when you are ready. Vercel will deploy the connected repository.
+3. Check `https://download.get-playbook.com/` on desktop, Android, and iPhone/iPad after deployment.
 
-If you later connect a custom domain, regenerate the QR code only if you want the QR to point to that domain. Keep the original Vercel URL active for any QR codes already printed.
+To make a new QR code, encode `https://download.get-playbook.com/` directly as a **static** QR, without a dynamic QR service or short link. Export **SVG for print** and **PNG for digital use**, then scan both files to confirm the destination.
 
 ## Quick checks
 
-- Desktop browser: the page remains visible and both store buttons work.
+- Desktop browser: the page remains visible and all three buttons work.
 - Android phone: the page briefly shows a Google Play message, then opens the Google Play listing.
 - iPhone or iPad: the page briefly shows an App Store message, then opens the App Store listing.
-- If a browser blocks the redirect or JavaScript is disabled, visitors can use either store button manually.
+- If a browser blocks the redirect or JavaScript is disabled, visitors can choose a button manually.
 
-The [App Store](https://apps.apple.com/bh/app/playbook-network/id1622077073), [Google Play](https://play.google.com/store/apps/details?id=com.mightybell.playbook), and [PLAYBOOK website](https://www.get-playbook.com/) URLs are defined in `index.html`.
+The [App Store](https://apps.apple.com/bh/app/playbook-network/id1622077073), [Google Play](https://play.google.com/store/apps/details?id=com.mightybell.playbook), and [PLAYBOOK web version](https://app.get-playbook.com/app) URLs are defined in `index.html`.
