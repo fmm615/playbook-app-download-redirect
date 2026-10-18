@@ -23,6 +23,8 @@ class DownloadPageParser(HTMLParser):
             self.current_link = {**attributes, "label": ""}
         elif tag == "img":
             self.images.append(attributes)
+        elif tag == "svg" and self.current_link is not None:
+            self.current_link["icon"] = attributes
         elif tag == "h1":
             self.visible_headings.append(tag)
 
@@ -44,7 +46,7 @@ class DownloadPageTests(unittest.TestCase):
         self.page = DownloadPageParser()
         self.page.feed(PAGE.read_text(encoding="utf-8"))
 
-    def test_three_matching_options_include_web_version(self):
+    def test_download_options_include_web_version_and_whatsapp(self):
         self.assertEqual(
             [(link["href"], link["label"].removesuffix("↗").strip()) for link in self.page.options],
             [
@@ -57,9 +59,18 @@ class DownloadPageTests(unittest.TestCase):
                     "Download on Google Play",
                 ),
                 ("https://app.get-playbook.com/app", "Open Web Version"),
+                ("https://wa.me/97338227733", "Chat with us on WhatsApp"),
             ],
         )
-        self.assertEqual(len({link.get("class") for link in self.page.options}), 1)
+        self.assertTrue(all("option-link" in link.get("class", "").split() for link in self.page.options))
+
+    def test_whatsapp_has_a_logo_and_is_separate_from_download_tracking(self):
+        links = [link for link in self.page.options if link["href"] == "https://wa.me/97338227733"]
+        self.assertEqual(len(links), 1)
+        self.assertIn("whatsapp-link", links[0]["class"])
+        self.assertEqual(links[0]["icon"]["viewbox"], "0 0 24 24")
+        self.assertEqual(links[0]["icon"]["aria-hidden"], "true")
+        self.assertNotIn("data-destination", links[0])
 
     def test_supplied_logo_is_used_with_accessible_text_and_dimensions(self):
         self.assertIn(
