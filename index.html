@@ -181,6 +181,7 @@
       <nav class="download-options" aria-label="PLAYBOOK options">
         <a
           class="option-link"
+          data-destination="apple"
           href="https://apps.apple.com/bh/app/playbook-network/id1622077073"
         >
           <span>Download on the App Store</span>
@@ -188,12 +189,13 @@
         </a>
         <a
           class="option-link"
+          data-destination="google"
           href="https://play.google.com/store/apps/details?id=com.mightybell.playbook"
         >
           <span>Download on Google Play</span>
           <span class="arrow" aria-hidden="true">↗</span>
         </a>
-        <a class="option-link" href="https://app.get-playbook.com/app">
+        <a class="option-link" data-destination="web" href="https://app.get-playbook.com/app">
           <span>Open Web Version</span>
           <span class="arrow" aria-hidden="true">↗</span>
         </a>
@@ -210,33 +212,8 @@
       </nav>
     </main>
 
-    <script>
-      (function () {
-        var userAgent = navigator.userAgent || "";
-        var destination = null;
-        var storeName = "";
-
-        if (/Android/i.test(userAgent)) {
-          destination = "https://play.google.com/store/apps/details?id=com.mightybell.playbook";
-          storeName = "Google Play";
-        } else if (
-          /iPhone|iPad|iPod/i.test(userAgent) ||
-          (/Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1)
-        ) {
-          destination = "https://apps.apple.com/bh/app/playbook-network/id1622077073";
-          storeName = "the App Store";
-        }
-
-        if (destination) {
-          document.getElementById("redirect-note").textContent =
-            "Taking you to " + storeName + "… If you are not redirected automatically, choose your store below.";
-
-          window.setTimeout(function () {
-            window.location.replace(destination);
-          }, 900);
-        }
-      })();
-    </script>
+    <script src="tracking-config.js"></script>
+    <script src="download.js"></script>
   </body>
 </html>
 
